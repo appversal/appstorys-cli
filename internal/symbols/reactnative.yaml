@@ -1,0 +1,9 @@
+platform: react-native
+sdk_version: "5.0.0"
+import: "@appstorys/appstorys-react-native"
+receivers: [AppStorys]
+# symbols / reserved_events / merged_metadata_keys are populated in
+# Phase 1 from the TS source of AppStorysReactNative.
+symbols: []
+reserved_events: []
+merged_metadata_keys: []

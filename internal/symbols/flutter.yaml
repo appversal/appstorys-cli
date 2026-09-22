@@ -1,0 +1,35 @@
+platform: flutter
+sdk_version: "5.0.2"
+import: package:appstorys_sdk_3_0/appstorys.dart
+receivers: [AppStorys]
+symbols:
+  # Not in the spec's excerpt (explicitly marked "(excerpt)"), but the
+  # concept map table confirms Flutter has AppStorys.initialize(...).
+  - concept: init
+    call: AppStorys.initialize
+  - concept: screen
+    call: AppStorys.trackScreen
+    name_arg: {positional: 0}
+    positions_arg: {positional: 3}
+  - concept: event
+    call: AppStorys.trackEvents
+    name_arg: {named: event}
+    props_arg: {named: metadata}
+  - concept: overlay-host
+    call: AppStorys.overlayElements
+    must_be_inside: Stack
+  - concept: placement
+    call: AppStorys.widgets
+    position_arg: {named: position}
+  - concept: tag
+    constructor: ValueKey
+    # Not in the spec's excerpt (explicitly marked "(excerpt)"), but the
+    # concept map table confirms the shape: ValueKey<String> takes the
+    # tag name as its constructor argument.
+    name_arg: {positional: 0}
+reserved_events: [viewed, clicked, closed, "csat captured", "survey captured",
+                  shared, SurveySubmitted, SurveyDismissed, ThankYouCTAClicked]
+merged_metadata_keys: [manufacturer, model, os_version, api_level, language, locale,
+                       timezone, screen_width_px, screen_height_px, screen_density,
+                       orientation, app_version, package_name, device_type, platform,
+                       install_time, update_time]

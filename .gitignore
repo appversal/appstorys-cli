@@ -1,0 +1,6 @@
+/appstorys-cli
+/dist/
+*.test
+*.out
+coverage.*
+.DS_Store

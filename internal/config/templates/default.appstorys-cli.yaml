@@ -1,0 +1,23 @@
+version: 1
+platforms: [android]             # auto-detected if omitted
+include: ["app/src"]
+exclude: ["**/test/**", "**/generated/**"]
+receivers:                       # aliases for the SDK singleton
+  - App.appStorys
+wrappers:                        # the app's own helpers around SDK calls
+  - name: Analytics.log
+    concept: event
+    name_arg: 0
+    props_arg: 1
+naming:
+  events: snake_case
+rules:
+  pii-property: error
+  dynamic-name: off
+screens:
+  ignore: [SplashActivity]
+init:
+  token_expr: "Secrets.appstorysToken"   # optional; overrides the platform default
+integrate:
+  min_confidence: 0.6
+  flows: [signup, checkout]

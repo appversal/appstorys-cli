@@ -1,0 +1,10 @@
+platform: ios
+sdk_version: "5.0.0"
+import: AppStorys_iOS
+receivers: [AppStorys, AppStorys.shared]
+# symbols / reserved_events / merged_metadata_keys are populated in
+# Phase 1 from the .swiftinterface in the released xcframework
+# (Appstorys_iOS is binary-only; there is no Swift source to read).
+symbols: []
+reserved_events: []
+merged_metadata_keys: []

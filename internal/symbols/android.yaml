@@ -1,0 +1,48 @@
+platform: android
+# Version string is ambiguous in the source repo (open question in the
+# spec): JitPack tag says 5.0.2, the POM says 3.7.2, the runtime reports
+# 5.0.1. Using the tag version until the SDK team confirms which is
+# authoritative.
+sdk_version: "5.0.2"
+import: com.appversal.appstorys.AppStorys
+receivers: [AppStorys]
+# Built from the spec's "Concept map per platform" and F1 scan tables,
+# not from the Kotlin source (not available locally). name_arg sets both
+# named and positional since the spec notes trackEvents accepts either
+# form (event is the 2nd positional argument when called positionally).
+symbols:
+  - concept: init
+    call: AppStorys.initialize
+  - concept: screen
+    call: AppStorys.getScreenCampaigns
+    name_arg: {positional: 0}
+    positions_arg: {positional: 1}
+  - concept: event
+    call: AppStorys.trackEvents
+    name_arg: {named: event, positional: 1}
+    props_arg: {named: metadata}
+  - concept: overlay-host
+    call: overlayElements
+  - concept: placement
+    call: Stories
+  - concept: placement
+    call: Widget
+    position_arg: {named: position}
+  - concept: placement
+    call: Reels
+  - concept: placement
+    call: Milestone
+    position_arg: {named: position}
+  - concept: tag
+    call: Modifier.appstorys
+    name_arg: {positional: 0}
+# Flutter adds "closed" to this list; Android's own list per the spec's
+# F2 rules table does not include it.
+reserved_events: [viewed, clicked, "csat captured", "survey captured",
+                  shared, SurveySubmitted, SurveyDismissed, ThankYouCTAClicked]
+# The spec's F2 table only gives examples ("model, platform, app_version,
+# locale, ...") for the metadata-key-overwritten rule, not a full
+# Android-specific list; only the Flutter symbol map excerpt gives a
+# complete one. Left empty rather than assuming Android's list matches
+# Flutter's.
+merged_metadata_keys: []

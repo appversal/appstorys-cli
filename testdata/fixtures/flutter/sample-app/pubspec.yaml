@@ -1,0 +1,10 @@
+name: sample_app
+description: A sample Flutter fixture app.
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  appstorys_sdk_3_0: ^5.0.2
