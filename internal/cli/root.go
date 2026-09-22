@@ -63,6 +63,7 @@ func NewRootCmd() *cobra.Command {
 	cmd.AddCommand(newLintCmd())
 	cmd.AddCommand(newValidateCmd())
 	cmd.AddCommand(newEventsCmd())
+	cmd.AddCommand(newDoctorCmd())
 
 	return cmd
 }

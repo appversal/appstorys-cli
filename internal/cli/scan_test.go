@@ -33,17 +33,17 @@ func TestScanProjectAndroid(t *testing.T) {
 	if len(byKind["init"]) != 1 {
 		t.Errorf("init sites = %d, want 1", len(byKind["init"]))
 	}
-	if len(byKind["screen"]) != 1 || byKind["screen"][0].Name != "Home Screen" {
-		t.Errorf("screen sites = %+v", byKind["screen"])
+	if len(byKind["screen"]) != 2 { // Home Screen + Settings Screen
+		t.Errorf("screen sites = %d, want 2: %+v", len(byKind["screen"]), byKind["screen"])
 	}
 	if len(byKind["event"]) != 2 { // Login + clicked
 		t.Errorf("event sites = %d, want 2: %+v", len(byKind["event"]), byKind["event"])
 	}
-	if len(byKind["overlay-host"]) != 1 {
-		t.Errorf("overlay-host sites = %d, want 1", len(byKind["overlay-host"]))
+	if len(byKind["overlay-host"]) != 3 { // Compose x2 (Home, Settings) + layout XML OverlayLayoutView
+		t.Errorf("overlay-host sites = %d, want 3: %+v", len(byKind["overlay-host"]), byKind["overlay-host"])
 	}
-	if len(byKind["placement"]) != 1 {
-		t.Errorf("placement sites = %d, want 1", len(byKind["placement"]))
+	if len(byKind["placement"]) != 2 { // Compose Widget() + layout XML WidgetView
+		t.Errorf("placement sites = %d, want 2: %+v", len(byKind["placement"]), byKind["placement"])
 	}
 	if len(byKind["tag"]) != 1 || byKind["tag"][0].Name != "tooltip_one" {
 		t.Errorf("tag sites = %+v", byKind["tag"])
@@ -53,8 +53,8 @@ func TestScanProjectAndroid(t *testing.T) {
 	if len(c.Events) != 2 {
 		t.Errorf("catalog events = %d, want 2", len(c.Events))
 	}
-	if len(c.Screens) != 1 {
-		t.Errorf("catalog screens = %d, want 1", len(c.Screens))
+	if len(c.Screens) != 2 {
+		t.Errorf("catalog screens = %d, want 2", len(c.Screens))
 	}
 
 	findings, err := lintProject(app, nil)

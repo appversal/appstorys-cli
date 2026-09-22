@@ -9,6 +9,7 @@ import (
 	sitter "github.com/tree-sitter/go-tree-sitter"
 
 	"github.com/appversal/appstorys-cli/internal/extract"
+	"github.com/appversal/appstorys-cli/internal/lang/androidxml"
 	"github.com/appversal/appstorys-cli/internal/lang/dart"
 	"github.com/appversal/appstorys-cli/internal/lang/kotlin"
 	"github.com/appversal/appstorys-cli/internal/parse"
@@ -114,7 +115,14 @@ func scanPlatform(app *App, info project.ProjectInfo) ([]extract.CallSite, error
 	var sites []extract.CallSite
 	for _, rel := range files {
 		if filepath.Ext(rel) != fileExt {
-			continue // e.g. skip Android's res/layout/*.xml here; no XML adapter yet
+			if info.Platform == project.Android && filepath.Ext(rel) == ".xml" {
+				xmlSites, err := scanAndroidLayoutXML(app, rel)
+				if err != nil {
+					return nil, err
+				}
+				sites = append(sites, xmlSites...)
+			}
+			continue
 		}
 		data, err := os.ReadFile(filepath.Join(app.Root, rel))
 		if err != nil {
@@ -127,6 +135,21 @@ func scanPlatform(app *App, info project.ProjectInfo) ([]extract.CallSite, error
 		calls := walk(tree, data)
 		sites = append(sites, extract.Match(calls, rel, data, info.Platform, sm, lr, opts)...)
 		tree.Close()
+	}
+	return sites, nil
+}
+
+// scanAndroidLayoutXML scans one Android layout XML file for
+// OverlayLayoutView/WidgetView, the two layout-XML symbols the Kotlin
+// tree-sitter walk doesn't see.
+func scanAndroidLayoutXML(app *App, rel string) ([]extract.CallSite, error) {
+	data, err := os.ReadFile(filepath.Join(app.Root, rel))
+	if err != nil {
+		return nil, fmt.Errorf("reading %s: %w", rel, err)
+	}
+	sites, err := androidxml.Scan(rel, data)
+	if err != nil {
+		return nil, err
 	}
 	return sites, nil
 }
