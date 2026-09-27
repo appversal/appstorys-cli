@@ -1,0 +1,106 @@
+version: 2
+
+project_name: appstorys-cli
+
+# No `before.hooks: go mod tidy` — it fails in this repo regardless of
+# goreleaser (the tree-sitter-dart replace directive confuses `go mod
+# tidy`'s resolution of that module's own test dependencies; `go build`
+# and `go test` are unaffected, this is tidy-specific). go.sum is already
+# committed and valid, so this isn't needed before a release build.
+
+# cgo (tree-sitter) makes this a cross-compilation build, not a normal Go
+# one: it runs inside the goreleaser-cross Docker image (see
+# .github/workflows/release.yml), which bundles a working C cross
+# compiler for every target below. CC is picked per target the same way
+# goreleaser's own docs example does it. No custom sysroot is needed —
+# tree-sitter and its grammars only need libc, which every bundled
+# toolchain already provides.
+builds:
+  - id: appstorys-cli
+    main: ./cmd/appstorys-cli
+    binary: appstorys-cli
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    env:
+      - CGO_ENABLED=1
+      - >-
+        {{- if eq .Os "darwin" }}
+          {{- if eq .Arch "amd64" }}CC=o64-clang{{- end }}
+          {{- if eq .Arch "arm64" }}CC=oa64-clang{{- end }}
+        {{- end }}
+        {{- if eq .Os "linux" }}
+          {{- if eq .Arch "amd64" }}CC=x86_64-linux-gnu-gcc{{- end }}
+          {{- if eq .Arch "arm64" }}CC=aarch64-linux-gnu-gcc{{- end }}
+        {{- end }}
+        {{- if eq .Os "windows" }}CC=x86_64-w64-mingw32-gcc{{- end }}
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/appversal/appstorys-cli/internal/cli.Version={{ .Version }}
+
+archives:
+  - id: appstorys-cli
+    ids: [appstorys-cli]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  github:
+    owner: appversal
+    name: appstorys-cli
+  prerelease: auto
+  draft: false
+
+homebrew_casks:
+  - name: appstorys-cli
+    binaries:
+      - appstorys-cli
+    homepage: "https://github.com/appversal/appstorys-cli"
+    description: "Finds, checks and fixes AppStorys SDK instrumentation in a mobile app"
+    directory: Casks
+    repository:
+      owner: appversal
+      name: homebrew-tap
+      branch: main
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    commit_author:
+      name: goreleaserbot
+      email: bot@appversal.dev
+    commit_msg_template: "Cask update for {{ .ProjectName }} version {{ .Tag }}"
+
+scoops:
+  - name: appstorys-cli
+    homepage: "https://github.com/appversal/appstorys-cli"
+    description: "Finds, checks and fixes AppStorys SDK instrumentation in a mobile app"
+    license: MIT
+    directory: ""
+    repository:
+      owner: appversal
+      name: scoop-bucket
+      branch: main
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    commit_author:
+      name: goreleaserbot
+      email: bot@appversal.dev
+    commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"

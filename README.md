@@ -23,7 +23,21 @@ A project is detected from files at `--root`: `settings.gradle(.kts)` plus `buil
 
 ## Install
 
-There are no prebuilt binaries yet. Build from source with Go 1.25 or newer and a C compiler (tree-sitter needs cgo; on macOS, the Xcode command-line tools):
+**macOS:**
+
+```
+brew tap appversal/tap
+brew install --cask appstorys-cli
+```
+
+**Windows:**
+
+```
+scoop bucket add appversal https://github.com/appversal/scoop-bucket.git
+scoop install appversal/appstorys-cli
+```
+
+**Linux, or building from source:** download a prebuilt archive from the [releases page](https://github.com/appversal/appstorys-cli/releases), or build with Go 1.25 or newer and a C compiler (tree-sitter needs cgo):
 
 ```
 CGO_ENABLED=1 go build -o appstorys-cli ./cmd/appstorys-cli
@@ -162,3 +176,7 @@ CGO_ENABLED=1 go test ./...
 Small hand-written apps for every platform and scenario live in `testdata/fixtures/`; the tests run the scan, lint, doctor, init, integrate and skill commands against them, including that applied edits still parse and that a second run changes nothing. SDK facts (symbols, reserved event names) are data in `internal/symbols/*.yaml`, not Go code.
 
 The original feature plan, roadmap and open questions are in [`docs/task-context.md`](docs/task-context.md).
+
+## License
+
+[MIT](LICENSE)
