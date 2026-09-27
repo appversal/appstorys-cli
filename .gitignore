@@ -4,3 +4,14 @@
 *.out
 coverage.*
 .DS_Store
+
+# Fixtures under testdata/ are parsed statically, never actually built —
+# these are cache/output dirs left behind by an IDE or SDK tool that ran
+# against a fixture locally (e.g. Android Studio's Gradle sync).
+.gradle/
+build/
+.dart_tool/
+node_modules/
+.idea/
+*.iml
+local.properties
