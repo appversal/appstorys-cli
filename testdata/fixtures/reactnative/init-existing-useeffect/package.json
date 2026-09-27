@@ -1,0 +1,9 @@
+{
+  "name": "init-existing-useeffect",
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.78.0",
+    "@appstorys/appstorys-react-native": "^5.0.0"
+  }
+}

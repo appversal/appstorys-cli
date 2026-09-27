@@ -76,8 +76,12 @@ func validate(m *Map) error {
 		return fmt.Errorf("missing sdk_version")
 	}
 	// A concept may have several symbols (e.g. several placement kinds:
-	// Stories, Widget, Reels, Milestone), so uniqueness is checked on
-	// the symbol's actual identifier (call or constructor) instead.
+	// Stories, Widget, Reels, Milestone), so uniqueness isn't keyed on
+	// concept alone. And one call/constructor can serve more than one
+	// concept at once — React Native's <AppStorys.Screen> both
+	// auto-tracks the screen and acts as its overlay host — so
+	// uniqueness is keyed on (concept, identifier) together, not the
+	// identifier alone.
 	seen := make(map[string]bool, len(m.Symbols))
 	for _, s := range m.Symbols {
 		id := s.Call
@@ -87,10 +91,11 @@ func validate(m *Map) error {
 		if id == "" {
 			return fmt.Errorf("symbol with concept %q has neither call nor constructor", s.Concept)
 		}
-		if seen[id] {
-			return fmt.Errorf("duplicate symbol %q", id)
+		key := s.Concept + "\x00" + id
+		if seen[key] {
+			return fmt.Errorf("duplicate symbol %q for concept %q", id, s.Concept)
 		}
-		seen[id] = true
+		seen[key] = true
 	}
 	return nil
 }

@@ -21,6 +21,10 @@ symbols:
   - concept: placement
     call: AppStorys.widgets
     position_arg: {named: position}
+  # Not in the spec's excerpt, but its concept map lists stories()
+  # alongside widgets(position:) as Flutter's inline placements.
+  - concept: placement
+    call: AppStorys.stories
   - concept: tag
     constructor: ValueKey
     # Not in the spec's excerpt (explicitly marked "(excerpt)"), but the

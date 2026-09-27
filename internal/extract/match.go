@@ -100,7 +100,10 @@ func Match(calls []CallExpr, file string, src []byte, platform project.Platform,
 			}
 
 			sites = append(sites, site)
-			break // first matching symbol wins; symbol lists don't overlap in practice
+			// Deliberately no break: one call can serve more than one
+			// concept at once (React Native's <AppStorys.Screen> both
+			// auto-tracks the screen and acts as its overlay host), so
+			// every matching symbol gets its own CallSite.
 		}
 	}
 	return sites

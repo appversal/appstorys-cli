@@ -2,8 +2,48 @@ platform: react-native
 sdk_version: "5.0.0"
 import: "@appstorys/appstorys-react-native"
 receivers: [AppStorys]
-# symbols / reserved_events / merged_metadata_keys are populated in
-# Phase 1 from the TS source of AppStorysReactNative.
-symbols: []
-reserved_events: []
+# Built from the spec's "Concept map per platform" and F1 scan tables,
+# not from the TS source (not available locally).
+#
+# <AppStorys.Screen> is listed under both "screen" (it auto-tracks) and
+# "overlay-host" (it's also the container) — the same JSX element
+# genuinely serves both concepts at once, per the concept map's "Screen
+# tracking" and "Overlay host" rows both naming it.
+#
+# The "tag" concept (appstorys="id" on any JSX element) isn't listed
+# here: it can't be expressed as a call/constructor match against one
+# component name, since it's an attribute that can appear on any
+# element. internal/lang/ts scans for it directly, the same way
+# internal/lang/androidxml scans Android layout XML outside the symbol
+# map's call/constructor model.
+symbols:
+  - concept: init
+    call: AppStorys.initialize
+  - concept: screen
+    call: AppStorys.trackScreen
+    name_arg: {positional: 0}
+  - concept: screen
+    call: AppStorys.Screen
+    name_arg: {named: name}
+  - concept: event
+    call: AppStorys.trackEvent
+    name_arg: {positional: 0}
+    props_arg: {positional: 2}
+  - concept: overlay-host
+    call: AppStorys.Screen
+  - concept: overlay-host
+    call: AppStorys.Container
+  - concept: placement
+    call: AppStorys.Stories
+  - concept: placement
+    call: AppStorys.Widgets
+    position_arg: {named: position}
+# The spec's F2 table states this base reserved-event list applies to
+# "all" platforms explicitly, with Flutter alone adding "closed" (same
+# reasoning already applied to android.yaml) — unlike
+# merged_metadata_keys, where the table only gives generic examples and
+# only Flutter's excerpt has a complete list, so that one is left empty
+# here rather than assumed.
+reserved_events: [viewed, clicked, "csat captured", "survey captured",
+                  shared, SurveySubmitted, SurveyDismissed, ThankYouCTAClicked]
 merged_metadata_keys: []

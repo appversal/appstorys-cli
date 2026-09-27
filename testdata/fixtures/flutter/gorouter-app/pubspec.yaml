@@ -1,0 +1,11 @@
+name: gorouter_app
+description: A Flutter fixture app using go_router.
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  appstorys_sdk_3_0: ^5.0.2
+  go_router: ^14.0.0

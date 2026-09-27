@@ -39,9 +39,29 @@ func newDoctorCmd() *cobra.Command {
 						return err
 					}
 					results = append(results, r...)
+				case project.ReactNative:
+					sites, err := scanPlatform(app, info)
+					if err != nil {
+						return err
+					}
+					r, err := doctorReactNative(app, sites)
+					if err != nil {
+						return err
+					}
+					results = append(results, r...)
+				case project.Flutter:
+					sites, err := scanPlatform(app, info)
+					if err != nil {
+						return err
+					}
+					r, err := doctorFlutter(app, sites)
+					if err != nil {
+						return err
+					}
+					results = append(results, r...)
 				default:
 					return &CLIError{Code: ExitProjectUnsupported, Err: fmt.Errorf(
-						"doctor doesn't support %s yet (only android is implemented so far)", info.Platform)}
+						"doctor doesn't support %s yet (only android, react-native and flutter are implemented so far)", info.Platform)}
 				}
 			}
 

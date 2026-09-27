@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"reflect"
 	"strings"
 	"text/tabwriter"
 )
@@ -20,8 +21,13 @@ type Envelope struct {
 	Data          any `json:"data"`
 }
 
-// WriteJSON writes data wrapped in an Envelope.
+// WriteJSON writes data wrapped in an Envelope. A nil top-level slice is
+// written as [] rather than null, so "no results" is an empty list for
+// every command instead of a value consumers must special-case.
 func WriteJSON(w io.Writer, data any) error {
+	if rv := reflect.ValueOf(data); rv.Kind() == reflect.Slice && rv.IsNil() {
+		data = reflect.MakeSlice(rv.Type(), 0, 0).Interface()
+	}
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	return enc.Encode(Envelope{SchemaVersion: 1, Data: data})

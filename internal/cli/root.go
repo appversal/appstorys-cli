@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 
@@ -64,6 +65,9 @@ func NewRootCmd() *cobra.Command {
 	cmd.AddCommand(newValidateCmd())
 	cmd.AddCommand(newEventsCmd())
 	cmd.AddCommand(newDoctorCmd())
+	cmd.AddCommand(newInitCmd())
+	cmd.AddCommand(newIntegrateCmd())
+	cmd.AddCommand(newSkillCmd())
 
 	return cmd
 }
@@ -76,8 +80,16 @@ func Execute() int {
 	}
 	var cliErr *CLIError
 	if errors.As(err, &cliErr) {
+		// ExitFindings means the command already printed its findings;
+		// repeating a generic "found errors" line would just be noise.
+		// Every other failure would otherwise be a bare exit code with no
+		// explanation, which is useless to a developer or an agent.
+		if cliErr.Code != ExitFindings {
+			fmt.Fprintf(os.Stderr, "error: %v\n", cliErr.Err)
+		}
 		return cliErr.Code
 	}
+	fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	return ExitUsageOrConfig
 }
 

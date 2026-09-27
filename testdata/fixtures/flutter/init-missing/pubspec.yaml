@@ -1,0 +1,9 @@
+name: init_missing
+description: A Flutter fixture app with no AppStorys init call yet.
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter

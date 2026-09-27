@@ -95,7 +95,13 @@ func resolveArgs(n *sitter.Node, src []byte) []extract.Arg {
 	for _, a := range namedChildren(n) {
 		switch a.Kind() {
 		case "argument":
-			if named := namedChildren(a); len(named) == 1 {
+			// A positional argument that's itself a call (e.g. runApp(MyApp())'s
+			// MyApp()) wraps an identifier+selector-chain pair as two
+			// named children, not one — namedChildren's first element
+			// is still the value's leading node either way, so take it
+			// regardless of count instead of requiring exactly one and
+			// silently dropping call-shaped arguments.
+			if named := namedChildren(a); len(named) >= 1 {
 				args = append(args, extract.Arg{Node: named[0]})
 			}
 		case "named_argument":

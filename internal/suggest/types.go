@@ -1,8 +1,8 @@
-// Package suggest will hold the init/screen/event detectors that produce
-// Suggestion values for the `integrate` command (Phase 3). Only the
-// Suggestion type itself — fully specified by the spec's core types —
-// lives here so far, since internal/rules' Finding.Fix needs a real type
-// to point at rather than a placeholder that would need migrating later.
+// Package suggest holds the Suggestion type (per the spec's core types)
+// and StableID. The `init` command's Android planning logic in
+// internal/cli produces Suggestion values using this package's types,
+// but the screen/event detectors `integrate` needs (confidence scoring,
+// dedup against existing calls) aren't implemented yet — Phase 3.
 package suggest
 
 // Suggestion is a proposed edit: an init call, an overlay host, a screen
