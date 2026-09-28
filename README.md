@@ -26,9 +26,10 @@ A project is detected from files at `--root`: `settings.gradle(.kts)` plus `buil
 **macOS:**
 
 ```
-brew tap appversal/tap
-brew install --cask appstorys-cli
+brew install --cask appversal/tap/appstorys-cli
 ```
+
+(Installing by the fully-qualified name in one command auto-trusts just this cask. A separate `brew tap` followed by `brew install --cask appstorys-cli` hits Homebrew's [tap trust](https://docs.brew.sh/Tap-Trust) prompt instead — that's a per-user Homebrew security gate for any non-official tap, not something we control, so this is the form to hand users.)
 
 **Windows:**
 
